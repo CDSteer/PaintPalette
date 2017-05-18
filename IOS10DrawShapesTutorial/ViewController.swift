@@ -1,4 +1,3 @@
-//
 //  ViewController.swift
 //  IOS10DrawShapesTutorial
 //
