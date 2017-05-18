@@ -92,7 +92,7 @@ class ViewController: UIViewController {
                 
                 
                 xPlace = xPlace+10
-                if (xPlace>=400){
+                if (xPlace>400){
                     yPlace = yPlace+10
                     xPlace=0
                 }
@@ -224,7 +224,7 @@ class ViewController: UIViewController {
             let position = touch.location(in: self.view)
             
             if (spread){
-                drawCircle(position, paintColour: brushColor)
+                // drawCircle(position, paintColour: brushColor)
             }
             paintSeletion(position: position)
             
@@ -314,6 +314,12 @@ class ViewController: UIViewController {
                             
                             newColour = UIColor.init(red: CGFloat(newRed)/255, green: CGFloat(newGreen)/255, blue: CGFloat(newBlue)/255, alpha: a)
                             paintSections[i].backgroundColor = newColour
+                            
+                            let activeAdjacents:[coordinates] = getAdjacentValues(x: i%paletteW, y: (i-x)/paletteW)
+                            for activeAdjacent in activeAdjacents{
+                                let p = get1DPoint(x: activeAdjacent.x, y:activeAdjacent.y)
+                                if (p>0) {paintSections[p].backgroundColor = newColour}
+                            }
                         }
                     }
                     }
@@ -321,13 +327,32 @@ class ViewController: UIViewController {
             }
         }
         
-
-        
         // drawLineFromPoint(start: lastPoint, toPoint: newPoint!, ofColor: UIColor.init(red: (brushColor.components?[0])!, green: (brushColor.components?[1])!, blue: (brushColor.components?[2])!, alpha: 1), inView: self.view)
         
         lastPoint = touches.first?.location(in: self.view)
 
         
+    }
+    
+    func get1DPoint(x:Int, y:Int)-> Int{
+        return x+(y*paletteW)
+    }
+    
+    struct coordinates {
+        var x: Int
+        var y: Int
+    }
+
+    let directions = [coordinates(x: -1, y: -1),coordinates(x: -1,y: 0),coordinates(x: -1,y: 1),coordinates(x: 0,y: -1), coordinates(x: 0,y: 0), coordinates(x: 0,y: 1),coordinates(x: 1,y: -1),coordinates(x: 1,y: 0),coordinates(x: 1,y: 1)];
+    
+    func getAdjacentValues(x:Int, y:Int) -> [coordinates] {
+        var activeAdjacents: [coordinates] = []
+        for i in 0...directions.count-1 {
+            activeAdjacents.append(coordinates(x: 0, y: 0))
+            activeAdjacents[i].x = x + directions[i].x;
+            activeAdjacents[i].y = y + directions[i].y;
+        }
+        return activeAdjacents
     }
     
     func drawLineFromPoint(start : CGPoint, toPoint end:CGPoint, ofColor lineColor: UIColor, inView view:UIView) {
@@ -424,18 +449,22 @@ class ViewController: UIViewController {
         brushColor = UIColor.blue.cgColor
     }
     
-
-
+    var splitString = [String]()
     
     func showValues(_ fullString: String) {
-        print(fullString)
-        if (fullString == "clear"){
-            viewDidLoad()
-        }
+        splitString(fullString)
+        // assert(splitString.count==2)
+        let x:Int = get1DPoint(x: Int(splitString[0])!, y: Int(splitString[1])!)
+        if (x>0 && x<1600){paintSections[x].backgroundColor = UIColor.black}
+    }
+
+    func splitString(_ fullString: String) {
+        splitString = fullString.components(separatedBy: ";")
     }
     
+    
     func recievedValues(_ value: String) {
-        print("recievedValues")
+        print("recievedValues:", value)
         showValues(value)
     }
     
