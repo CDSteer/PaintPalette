@@ -14,6 +14,10 @@
 		AF3BAAC11EBCC8B700DB07C5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AF3BAABF1EBCC8B700DB07C5 /* LaunchScreen.storyboard */; };
 		AF3BAACC1EBCC8B700DB07C5 /* IOS10DrawShapesTutorialTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF3BAACB1EBCC8B700DB07C5 /* IOS10DrawShapesTutorialTests.swift */; };
 		AF3BAAD71EBCC8B700DB07C5 /* IOS10DrawShapesTutorialUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF3BAAD61EBCC8B700DB07C5 /* IOS10DrawShapesTutorialUITests.swift */; };
+		AF3BAAE51EBCCCED00DB07C5 /* ShapeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF3BAAE41EBCCCED00DB07C5 /* ShapeView.swift */; };
+		AF748FB91ECC5E6D00A12D53 /* BluetoothIO.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF748FB81ECC5E6D00A12D53 /* BluetoothIO.swift */; };
+		AFC1BB211ECB55FC00D82FF6 /* Line.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFC1BB201ECB55FC00D82FF6 /* Line.swift */; };
+		AFC1BB231ECB5EC700D82FF6 /* DrawLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFC1BB221ECB5EC700D82FF6 /* DrawLine.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +51,10 @@
 		AF3BAAD21EBCC8B700DB07C5 /* IOS10DrawShapesTutorialUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IOS10DrawShapesTutorialUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AF3BAAD61EBCC8B700DB07C5 /* IOS10DrawShapesTutorialUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOS10DrawShapesTutorialUITests.swift; sourceTree = "<group>"; };
 		AF3BAAD81EBCC8B700DB07C5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AF3BAAE41EBCCCED00DB07C5 /* ShapeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShapeView.swift; sourceTree = "<group>"; };
+		AF748FB81ECC5E6D00A12D53 /* BluetoothIO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BluetoothIO.swift; sourceTree = "<group>"; };
+		AFC1BB201ECB55FC00D82FF6 /* Line.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Line.swift; sourceTree = "<group>"; };
+		AFC1BB221ECB5EC700D82FF6 /* DrawLine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrawLine.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,10 +107,14 @@
 			children = (
 				AF3BAAB61EBCC8B700DB07C5 /* AppDelegate.swift */,
 				AF3BAAB81EBCC8B700DB07C5 /* ViewController.swift */,
+				AFC1BB201ECB55FC00D82FF6 /* Line.swift */,
+				AF748FB81ECC5E6D00A12D53 /* BluetoothIO.swift */,
 				AF3BAABA1EBCC8B700DB07C5 /* Main.storyboard */,
 				AF3BAABD1EBCC8B700DB07C5 /* Assets.xcassets */,
 				AF3BAABF1EBCC8B700DB07C5 /* LaunchScreen.storyboard */,
 				AF3BAAC21EBCC8B700DB07C5 /* Info.plist */,
+				AF3BAAE41EBCCCED00DB07C5 /* ShapeView.swift */,
+				AFC1BB221ECB5EC700D82FF6 /* DrawLine.swift */,
 			);
 			path = IOS10DrawShapesTutorial;
 			sourceTree = "<group>";
@@ -193,6 +205,7 @@
 				TargetAttributes = {
 					AF3BAAB21EBCC8B700DB07C5 = {
 						CreatedOnToolsVersion = 8.3.2;
+						DevelopmentTeam = PA72X6ECF5;
 						ProvisioningStyle = Automatic;
 					};
 					AF3BAAC61EBCC8B700DB07C5 = {
@@ -259,8 +272,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AF3BAAE51EBCCCED00DB07C5 /* ShapeView.swift in Sources */,
+				AFC1BB211ECB55FC00D82FF6 /* Line.swift in Sources */,
+				AF748FB91ECC5E6D00A12D53 /* BluetoothIO.swift in Sources */,
 				AF3BAAB91EBCC8B700DB07C5 /* ViewController.swift in Sources */,
 				AF3BAAB71EBCC8B700DB07C5 /* AppDelegate.swift in Sources */,
+				AFC1BB231ECB5EC700D82FF6 /* DrawLine.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -412,9 +429,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = PA72X6ECF5;
 				INFOPLIST_FILE = IOS10DrawShapesTutorial/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = fitlab.IOS10DrawShapesTutorial;
+				PRODUCT_BUNDLE_IDENTIFIER = fitlab.PaintPalette;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
@@ -424,9 +442,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = PA72X6ECF5;
 				INFOPLIST_FILE = IOS10DrawShapesTutorial/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = fitlab.IOS10DrawShapesTutorial;
+				PRODUCT_BUNDLE_IDENTIFIER = fitlab.PaintPalette;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
@@ -505,6 +524,7 @@
 				AF3BAADD1EBCC8B700DB07C5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		AF3BAADE1EBCC8B700DB07C5 /* Build configuration list for PBXNativeTarget "IOS10DrawShapesTutorialTests" */ = {
 			isa = XCConfigurationList;
@@ -513,6 +533,7 @@
 				AF3BAAE01EBCC8B700DB07C5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		AF3BAAE11EBCC8B700DB07C5 /* Build configuration list for PBXNativeTarget "IOS10DrawShapesTutorialUITests" */ = {
 			isa = XCConfigurationList;
@@ -521,6 +542,7 @@
 				AF3BAAE31EBCC8B700DB07C5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
