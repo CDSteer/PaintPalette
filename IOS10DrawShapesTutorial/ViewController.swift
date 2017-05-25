@@ -9,6 +9,19 @@ import UIKit
 
 
 class ViewController: UIViewController {
+    
+    struct coordinates {
+        var x: Int
+        var y: Int
+    }
+    
+    struct onCanvasPaintsLink {
+        var paintSection:UIView
+        var onCanvasPaint:[UIView]
+    }
+    
+    var onCanvasPaintsLinks:[onCanvasPaintsLink] = []
+    
     var isTouching:Bool = false
     var bluetoothIO: BluetoothIO!
     @IBOutlet weak var dataLbl: UILabel!
@@ -103,7 +116,7 @@ class ViewController: UIViewController {
         var yPlace:Int = 50
 
         //drawCircle(CGPoint(x: 10, y: 10), paintColour: UIColor.red.cgColor)
-        drawCircle(touchPoint: CGPoint(x: 10, y: 10), paintColour: UIColor.red.cgColor)
+        // drawCircle(touchPoint: CGPoint(x: 10, y: 10), paintColour: UIColor.red.cgColor, paintSectionsIndex: get1DPoint(x: 10, y: 10))
         
         for y in 0...paletteH {
             for x in 0...paletteW {
@@ -113,7 +126,7 @@ class ViewController: UIViewController {
                 paintSections[i].backgroundColor = UIColor.init(red: 255, green: 255, blue: 255, alpha: 1)
                 
                 self.view.addSubview(paintSections[i])
-                
+                onCanvasPaintsLinks.append(onCanvasPaintsLink(paintSection: UIView(), onCanvasPaint: [UIView]()))
                 
                 xPlace = xPlace+10
                 if (xPlace>paletteW*10){
@@ -325,23 +338,17 @@ class ViewController: UIViewController {
         
         if let touch = touches.first {
             let position = touch.location(in: self.view)
-            
-            if (spread){
-                drawCircle(touchPoint: position, paintColour: brushColor)
-            }
-            // paintSeletion(position: position)
-            
-            for onCanvasPaint in onCanvasPaints {
-                if (onCanvasPaint.frame.contains(position)){
-                    onCanvasPaints.remove(at: onCanvasPaints.index(of: onCanvasPaint)!)
-                }
-            }
-           
-            // var lightColour:UIColor!
             for y in 0...paletteH {
                 for x in 0...paletteW {
                     let i:Int = x+(y*paletteW)
                     if (paintSections[i].frame.contains(position)){
+                        drawCircle(touchPoint: position, paintColour: brushColor, paintSectionsIndex: i)
+                        for onCanvasPaint in onCanvasPaintsLinks[i].onCanvasPaint {
+                            if (onCanvasPaint.frame.contains(position)){
+                                onCanvasPaintsLinks[i].onCanvasPaint.remove(at: onCanvasPaintsLinks[i].onCanvasPaint.index(of:onCanvasPaint)!)
+                            }
+                        }
+                        
                         let activeAdjacents:[coordinates] = getAdjacentValues(x: i%paletteW, y: (i-x)/paletteW, offSet: offSet)
                         for activeAdjacent in activeAdjacents {
                             let p = get1DPoint(x: activeAdjacent.x, y:activeAdjacent.y)
@@ -351,7 +358,7 @@ class ViewController: UIViewController {
                                 let y:Int = 5
 //                                for _ in 1...2 {
 //                                    for _ in 1...2 {
-                                        drawCircle(touchPoint: CGPoint(x: paintSections[p].frame.origin.x+CGFloat(x), y: paintSections[p].frame.origin.y+CGFloat(y)), paintColour: brushColor)
+                                        drawCircle(touchPoint: CGPoint(x: paintSections[p].frame.origin.x+CGFloat(x), y: paintSections[p].frame.origin.y+CGFloat(y)), paintColour: brushColor, paintSectionsIndex: i)
 //                                        y = y+1
 //                                        if (y>5){
 //                                            x = x+1
@@ -363,11 +370,10 @@ class ViewController: UIViewController {
                             }
                             colourSquare(p:i, animateColour: false)
                         }
-                        
                     }
-                    
                 }
             }
+
             // if (isTouching){ offSet = offSet + 1 }
         }
         
@@ -391,11 +397,6 @@ class ViewController: UIViewController {
     
     func get1DPoint(x:Int, y:Int)-> Int{
         return x+(y*paletteW)
-    }
-    
-    struct coordinates {
-        var x: Int
-        var y: Int
     }
 
     let directions = [coordinates(x: -1, y: -1),coordinates(x: -1,y: 0),coordinates(x: -1,y: 1),coordinates(x: 0,y: -1), coordinates(x: 0,y: 0), coordinates(x: 0,y: 1),coordinates(x: 1,y: -1),coordinates(x: 1,y: 0),coordinates(x: 1,y: 1)];
@@ -437,7 +438,7 @@ class ViewController: UIViewController {
         return activeAdjacents
     }
     
-    func drawCircle(touchPoint:CGPoint, paintColour:CGColor) {
+    func drawCircle(touchPoint:CGPoint, paintColour:CGColor, paintSectionsIndex:Int){
         
         let circlePath = UIBezierPath(arcCenter: CGPoint(x: touchPoint.x, y: touchPoint.y), radius: CGFloat(10), startAngle: CGFloat(0), endAngle:CGFloat(Double.pi * 2), clockwise: true)
         
@@ -454,6 +455,9 @@ class ViewController: UIViewController {
         k.frame = CGRect(x: touchPoint.x, y: touchPoint.y, width: 5, height: 5)
         k.backgroundColor = UIColor.init(red: (paintColour.components?[0])!, green: (paintColour.components?[1])!, blue: (paintColour.components?[2])!, alpha: 1)
         onCanvasPaints.append(k)
+        onCanvasPaintsLinks[paintSectionsIndex].onCanvasPaint.append(k)
+
+        // print(onCanvasPaintsLinks[0])
         // self.view.addSubview(k)
     }
     
@@ -510,13 +514,12 @@ class ViewController: UIViewController {
         }
 
         setTouchDirection(newTouchCoordinates: currentPosition, prevTouchCoordinates: lastPosition)
-
-        drawCircle(touchPoint: positionCG, paintColour: brushColor)
+        drawCircle(touchPoint: positionCG, paintColour: brushColor, paintSectionsIndex: get1DPoint(x: position.x, y: position.y))
         paintSeletion(position: positionCG)
         
         for onCanvasPaint in onCanvasPaints {
             if (onCanvasPaint.frame.contains(positionCG)){
-                onCanvasPaint.backgroundColor = UIColor.init(red: (brushColor.components?[0])!, green: (brushColor.components?[1])!, blue: (brushColor.components?[2])!, alpha: 1)
+                onCanvasPaints.remove(at: onCanvasPaints.index(of: onCanvasPaint)!)
             }
         }
 
@@ -525,14 +528,15 @@ class ViewController: UIViewController {
                 let i:Int = x+(y*paletteW)
                 let activeAdjacents:[coordinates] = getAdjacentValues(x: i%paletteW, y: (i-x)/paletteW, offSet: offSet)
                 if (paintSections[i].frame.contains(positionCG)){
+                    colourSquare(p:i, animateColour:false)
                     for activeAdjacent in activeAdjacents {
                         let p = get1DPoint(x: activeAdjacent.x, y:activeAdjacent.y)
                         if (p != i && p>0){
-                            drawCircle(touchPoint: CGPoint(x: paintSections[p].frame.origin.x+CGFloat(5), y: paintSections[p].frame.origin.y+CGFloat(5)), paintColour: brushColor)
+                            // drawCircle(touchPoint: CGPoint(x: paintSections[p].frame.origin.x+CGFloat(5), y: paintSections[p].frame.origin.y+CGFloat(5)), paintColour: brushColor, paintSectionsIndex: i)
                             colourSquare(p:p, animateColour: false)
                         }
                     }
-                    colourSquare(p:i, animateColour:false)
+                    
                 }
             }
         }
