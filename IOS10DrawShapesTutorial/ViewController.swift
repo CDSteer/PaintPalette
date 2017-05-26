@@ -176,33 +176,6 @@ class ViewController: UIViewController {
             pots[i-1] = shapeLayer
         }
     }
-    
-    func respondToSwipeGesture(gesture: UIGestureRecognizer) {
-        if let swipeGesture = gesture as? UISwipeGestureRecognizer {
-            
-            switch swipeGesture.direction {
-                case UISwipeGestureRecognizerDirection.right:
-                    print("Swiped right")
-                    swipeDirects[DRIGHT] = true
-                
-                case UISwipeGestureRecognizerDirection.down:
-                    print("Swiped down")
-                    swipeDirects[DDOWN] = true
-                
-                case UISwipeGestureRecognizerDirection.left:
-                    print("Swiped left")
-                    swipeDirects[DLEFT] = true
-                
-                case UISwipeGestureRecognizerDirection.up:
-                    print("Swiped up")
-                    swipeDirects[DUP] = true
-                
-                default:
-                    break
-            }
-        }
-        print(swipeDirects)
-    }
 
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -264,13 +237,23 @@ class ViewController: UIViewController {
         return color
     }
     
+    func printCGColor(myCGCOLOR:CGColor) {
+        let testComponents:[CGFloat] = myCGCOLOR.components!
+        print("color R:",testComponents[0])
+        print("color G:",testComponents[1])
+        print("color B:",testComponents[2])
+    }
+    
     var colourCounts: [Int] = [0,0,0]
     
     func colourSquare(p:Int, animateColour:Bool) {
-        for onCanvasPaint in onCanvasPaints {
-            if (paintSections[p].frame.contains(CGPoint(x: (onCanvasPaint.frame.origin.x), y: (onCanvasPaint.frame.origin.y)))){
-                colourCount(onCanvasPaint: onCanvasPaint)
-            }
+        
+
+        for onCanvasPaint in onCanvasPaintsLinks[p].onCanvasPaint {
+            //if (paintSections[p].frame.contains(CGPoint(x: (onCanvasPaint.frame.origin.x), y: (onCanvasPaint.frame.origin.y)))){
+            colourCount(onCanvasPaint: onCanvasPaint)
+                // printCGColor(myCGCOLOR: (onCanvasPaint.backgroundColor?.cgColor)!)
+            // }
             var newRed:Float
             var newGreen:Float
             var newBlue:Float
@@ -358,7 +341,7 @@ class ViewController: UIViewController {
                                 let y:Int = 5
 //                                for _ in 1...2 {
 //                                    for _ in 1...2 {
-                                        drawCircle(touchPoint: CGPoint(x: paintSections[p].frame.origin.x+CGFloat(x), y: paintSections[p].frame.origin.y+CGFloat(y)), paintColour: brushColor, paintSectionsIndex: i)
+                                        drawCircle(touchPoint: CGPoint(x: paintSections[p].frame.origin.x+CGFloat(x), y: paintSections[p].frame.origin.y+CGFloat(y)), paintColour: brushColor, paintSectionsIndex: p)
 //                                        y = y+1
 //                                        if (y>5){
 //                                            x = x+1
@@ -440,7 +423,7 @@ class ViewController: UIViewController {
     
     func drawCircle(touchPoint:CGPoint, paintColour:CGColor, paintSectionsIndex:Int){
         
-        let circlePath = UIBezierPath(arcCenter: CGPoint(x: touchPoint.x, y: touchPoint.y), radius: CGFloat(10), startAngle: CGFloat(0), endAngle:CGFloat(Double.pi * 2), clockwise: true)
+        let circlePath = UIBezierPath(arcCenter: CGPoint(x: touchPoint.x/2, y: touchPoint.y/2), radius: CGFloat(10), startAngle: CGFloat(0), endAngle:CGFloat(Double.pi * 2), clockwise: true)
         
         let shapeLayer = CAShapeLayer()
         shapeLayer.path = circlePath.cgPath
@@ -452,9 +435,9 @@ class ViewController: UIViewController {
         // view.layer.addSublayer(CGRect(x: touchPoint.x, y: touchPoint, width: 1, height: 1))
         let k = UIView()
         
-        k.frame = CGRect(x: touchPoint.x, y: touchPoint.y, width: 5, height: 5)
+        k.frame = CGRect(x: touchPoint.x/2, y: touchPoint.y/2, width: 5, height: 5)
         k.backgroundColor = UIColor.init(red: (paintColour.components?[0])!, green: (paintColour.components?[1])!, blue: (paintColour.components?[2])!, alpha: 1)
-        onCanvasPaints.append(k)
+        // onCanvasPaints.append(k)
         onCanvasPaintsLinks[paintSectionsIndex].onCanvasPaint.append(k)
 
         // print(onCanvasPaintsLinks[0])
@@ -514,29 +497,31 @@ class ViewController: UIViewController {
         }
 
         setTouchDirection(newTouchCoordinates: currentPosition, prevTouchCoordinates: lastPosition)
-        drawCircle(touchPoint: positionCG, paintColour: brushColor, paintSectionsIndex: get1DPoint(x: position.x, y: position.y))
+        // drawCircle(touchPoint: positionCG, paintColour: brushColor, paintSectionsIndex: get1DPoint(x: position.x, y: position.y))
         paintSeletion(position: positionCG)
-        
-        for onCanvasPaint in onCanvasPaints {
-            if (onCanvasPaint.frame.contains(positionCG)){
-                onCanvasPaints.remove(at: onCanvasPaints.index(of: onCanvasPaint)!)
-            }
-        }
 
         for y in 0...paletteH {
             for x in 0...paletteW {
                 let i:Int = x+(y*paletteW)
-                let activeAdjacents:[coordinates] = getAdjacentValues(x: i%paletteW, y: (i-x)/paletteW, offSet: offSet)
                 if (paintSections[i].frame.contains(positionCG)){
-                    colourSquare(p:i, animateColour:false)
-                    for activeAdjacent in activeAdjacents {
-                        let p = get1DPoint(x: activeAdjacent.x, y:activeAdjacent.y)
-                        if (p != i && p>0){
-                            // drawCircle(touchPoint: CGPoint(x: paintSections[p].frame.origin.x+CGFloat(5), y: paintSections[p].frame.origin.y+CGFloat(5)), paintColour: brushColor, paintSectionsIndex: i)
-                            colourSquare(p:p, animateColour: false)
+                    drawCircle(touchPoint: positionCG, paintColour: brushColor, paintSectionsIndex: i)
+                    for onCanvasPaint in onCanvasPaintsLinks[i].onCanvasPaint {
+                        if (onCanvasPaint.frame.contains(positionCG)){
+                            onCanvasPaintsLinks[i].onCanvasPaint.remove(at: onCanvasPaintsLinks[i].onCanvasPaint.index(of:onCanvasPaint)!)
                         }
                     }
                     
+                    let activeAdjacents:[coordinates] = getAdjacentValues(x: i%paletteW, y: (i-x)/paletteW, offSet: offSet)
+                    for activeAdjacent in activeAdjacents {
+                        let p = get1DPoint(x: activeAdjacent.x, y:activeAdjacent.y)
+                        if (p != i && p>0){
+                            let x:Int = 5
+                            let y:Int = 5
+                            drawCircle(touchPoint: CGPoint(x: paintSections[p].frame.origin.x+CGFloat(x), y: paintSections[p].frame.origin.y+CGFloat(y)), paintColour: brushColor, paintSectionsIndex: p)
+                            colourSquare(p:p, animateColour: false)
+                        }
+                        colourSquare(p:i, animateColour: false)
+                    }
                 }
             }
         }
@@ -574,7 +559,7 @@ class ViewController: UIViewController {
     var lastValues:String = ""
     
     func recievedValues(_ value: String) {
-        // print("recievedValues:", value)
+        print("recievedValues:", value)
         splitString(value)
         currentValues = value
         if (Int(splitString[2])! < 100) {
